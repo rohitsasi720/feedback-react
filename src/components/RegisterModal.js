@@ -1,37 +1,37 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 export const RegisterModal = () => {
+  const navigate = useNavigate();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
 
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [error, setError] = useState("");
-
-    const handleSubmit = (event) => {
-      event.preventDefault();
-      if (password !== confirmPassword) {
-        setError("Passwords do not match");
-        console.log(error);
-      } else {
-        localStorage.setItem("username", name);
-        console.log(`Name: ${name} Email: ${email} Password: ${password}`);
-      } 
-    };
-
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      console.log(error);
+    } else {
+      localStorage.setItem("username", name);
+      console.log(`Name: ${name} Email: ${email} Password: ${password}`);
+      navigate("/dashboard");
+    }
+  };
 
   return (
     <>
       <nav className="relative flex flex-wrap items-center justify-between px-2 py-3 mb-3">
-        <div className="container px-4 mx-auto flex flex-wrap items-center justify-between">
-          <div className="w-full relative flex text-2xl justify-between font-semibold text-gray-400 lg:w-auto lg:static lg:block lg:justify-start">
+        <div className="container flex flex-wrap items-center justify-between px-4 mx-auto">
+          <div className="relative flex justify-between w-full text-2xl font-semibold text-gray-400 lg:w-auto lg:static lg:block lg:justify-start">
             Mozilor
           </div>
           <div className="flex-shrink-0">
             <Link
               to="/login"
-              className="text-gray-400 py-2 px-4 border border-slate-200 rounded"
+              className="px-4 py-2 text-gray-400 border rounded border-slate-200"
             >
               LOG IN / SIGN UP
             </Link>
@@ -41,8 +41,8 @@ export const RegisterModal = () => {
 
       <section>
         <div className="">
-          <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6">
-            <p className="font-bold text-center text-lg p-3">Register</p>
+          <div className="max-w-md p-6 mx-auto overflow-hidden bg-white shadow-md rounded-xl">
+            <p className="p-3 text-lg font-bold text-center">Register</p>
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
                 <label
@@ -127,7 +127,7 @@ export const RegisterModal = () => {
               <div>
                 <button
                   type="submit"
-                  className="items-center w-full px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-blue-700"
+                  className="items-center w-full px-4 py-2 text-base font-medium text-white bg-blue-700 border border-transparent rounded-md"
                 >
                   Register
                 </button>
@@ -138,4 +138,4 @@ export const RegisterModal = () => {
       </section>
     </>
   );
-}
+};
