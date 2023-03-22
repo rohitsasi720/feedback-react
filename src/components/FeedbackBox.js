@@ -1,16 +1,32 @@
 import { useState } from "react";
+import axios from "../api/axios";
 
 export const FeedbackBox = () => {
 
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [title, setTitle] = useState("");
-    const [detail, setDetail] = useState("");
+    const [details, setDetail] = useState("");
+    const csrf = () => axios.get('/sanctum/csrf-cookie');
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
       event.preventDefault();
-      localStorage.setItem("username", name);
-      console.log(`Name: ${name} Email: ${email} Title: ${title} Detail: ${detail}`);
+      await csrf();
+      try {
+        const response = await axios.post("/submit-form", {
+          name,
+          email,
+          title,
+          details,
+        });
+        console.log(response.data.message);
+        setName("");
+        setEmail("");
+        setTitle("");
+        setDetail("");
+      } catch (error) {
+        console.error(error);
+      }
     };
 
   return (
@@ -98,9 +114,9 @@ export const FeedbackBox = () => {
                   <textarea
                     className="border border-gray-100 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 h-24 resize-none"
                     id="detail"
-                    value={detail}
+                    value={details}
                     onChange={(e) => setDetail(e.target.value)}
-                    name="detail"
+                    name="details"
                     placeholder="Any additional details..."
                     required
                   />

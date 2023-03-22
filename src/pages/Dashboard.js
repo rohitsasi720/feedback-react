@@ -1,16 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import useAuthContext from "../context/AuthContext";
 import Logo from "../assets/mozilor-logo.svg";
 import Avatar from "../assets/avatar.avif";
 import Feedback from "../assets/feedback.png";
 import { Link } from "react-router-dom";
 import { UpvoteDownvote } from "../components/UpvoteDownvote";
 
+
 export const Dashboard = () => {  
-  const [showPopup, setShowPopup] = useState(false); // Add state for displaying popup
+  const [showPopup, setShowPopup] = useState(false); 
 
   const handleButtonClick = () => {
-    setShowPopup(true); // Show popup when button is clicked
+    setShowPopup(true); 
   };
+
+  const { user, getUser, logout } = useAuthContext();
+  useEffect(() => {
+    if(!user){
+      getUser();
+    }
+  }, [getUser, user]);
+  
   return (
     <main>
       <div>
@@ -30,7 +40,8 @@ export const Dashboard = () => {
                 className="text-lg font-semibold tracking-wide text-gray-700 capitalize font-poppins"
                 id="name"
               >
-                {localStorage.username}
+                {/* {user?.name} */}
+                {localStorage.getItem("username")}
               </h4>
               <span className="flex items-center space-x-1 text-sm tracking-wide">
                 <svg
@@ -96,6 +107,16 @@ export const Dashboard = () => {
             </div>
           </div>
         </button>
+        {user ? (
+          <button
+            className="h-12 p-2 px-4 py-2 mt-6 ml-auto mr-2 text-gray-400 border rounded pt- border-slate-200"
+            onClick={logout}
+          >
+            LOGOUT
+          </button>
+        ) : (
+          <></>
+        )}
       </div>
 
       {showPopup && (
@@ -119,6 +140,28 @@ export const Dashboard = () => {
               className="inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-lg shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6"
               style={{ maxWidth: "380px" }}
             >
+              <button
+                type="button"
+                className="box-content pt-2 border-none rounded-none pl-80 hover:no-underline hover:opacity-75 focus:opacity-100 focus:shadow-none focus:outline-none"
+                data-te-modal-dismiss
+                aria-label="Close"
+                onClick={() => setShowPopup(false)}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
               <div>
                 <div className="mt-3 sm:mt-5">
                   <h3 className="text-lg font-bold leading-6 text-gray-900">
@@ -143,6 +186,7 @@ export const Dashboard = () => {
                         />
                       </div>
                     </div>
+
                     <div>
                       <label
                         className="block font-medium text-gray-700"

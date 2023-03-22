@@ -1,26 +1,29 @@
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
+import useAuthContext from '../context/AuthContext'
+
 
 export const LoginModal = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { login, error } = useAuthContext();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(`Email: ${email} Password: ${password}`);
+    await login({ email, password });
   };
 
   return (
     <>
       <nav className="relative flex flex-wrap items-center justify-between px-2 py-3 mb-3">
-        <div className="container px-4 mx-auto flex flex-wrap items-center justify-between">
-          <div className="w-full relative flex text-2xl justify-between font-semibold text-gray-400 lg:w-auto lg:static lg:block lg:justify-start">
+        <div className="container flex flex-wrap items-center justify-between px-4 mx-auto">
+          <div className="relative flex justify-between w-full text-2xl font-semibold text-gray-400 lg:w-auto lg:static lg:block lg:justify-start">
             Mozilor
           </div>
           <div className="flex-shrink-0">
             <Link
               to="/register"
-              className="text-gray-400 py-2 px-4 rounded border border-slate-200"
+              className="px-4 py-2 text-gray-400 border rounded border-slate-200"
             >
               Register
             </Link>
@@ -28,8 +31,8 @@ export const LoginModal = () => {
         </div>
       </nav>
       <section>
-        <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6">
-          <p className="font-bold text-center text-lg p-3">Login</p>
+        <div className="max-w-md p-6 mx-auto overflow-hidden bg-white shadow-md rounded-xl">
+          <p className="p-3 text-lg font-bold text-center">Login</p>
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label
@@ -51,6 +54,14 @@ export const LoginModal = () => {
                 />
               </div>
             </div>
+            {error.email && (
+              <div className='flex'>
+              <span className='p-2 m-2 text-sm text-red-400'>
+                {error.email[0]}
+              </span>
+            </div>
+            )}
+            
             <div>
               <label
                 className="block font-medium text-gray-700"
@@ -71,10 +82,17 @@ export const LoginModal = () => {
                 />
               </div>
             </div>
+            {error.password && (
+              <div className='flex'>
+              <span className='p-2 m-2 text-sm text-red-400'>
+                {error.password[0]}
+              </span>
+            </div>
+            )}
             <div>
               <button
                 type="submit"
-                className="items-center w-full px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-blue-700"
+                className="items-center w-full px-4 py-2 text-base font-medium text-white bg-blue-700 border border-transparent rounded-md"
               >
                 Continue with email
               </button>

@@ -2,8 +2,17 @@ import { Link } from "react-router-dom";
 import bulb from "../assets/idea.png";
 import { FeedbackBox } from "../components/FeedbackBox";
 import { UpvoteDownvote } from "../components/UpvoteDownvote";
+import useAuthContext from "../context/AuthContext";
+import { useEffect } from "react";
 
 export const Feedback = () => {
+  const { user, getUser, logout } = useAuthContext();
+  useEffect(() => {
+    if (!user) {
+      getUser();
+    }
+  }, [getUser, user]);
+  
   return (
     <main>
       <section>
@@ -13,12 +22,23 @@ export const Feedback = () => {
               Mozilor
             </div>
             <div className="flex-shrink-0">
-              <Link
-                to="/login"
-                className="px-4 py-2 text-gray-400 border rounded border-slate-200"
-              >
-                LOG IN / SIGN UP
-              </Link>
+              {user ? (
+                <button
+                  className="px-4 py-2 text-gray-400 border rounded border-slate-200"
+                  onClick={logout}
+                >
+                  LOGOUT
+                </button>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    className="px-4 py-2 text-gray-400 border rounded border-slate-200"
+                  >
+                    LOG IN / SIGN UP
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </nav>
@@ -97,7 +117,6 @@ export const Feedback = () => {
                     </div>
                   </div>
                 </div>
-                
               </div>
             </div>
           </div>

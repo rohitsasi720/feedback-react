@@ -1,24 +1,19 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState } from "react";
+import useAuthContext from "../context/AuthContext";
+
 
 export const RegisterModal = () => {
-  const navigate = useNavigate();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
+  const [password_confirmation, setConfirmPassword] = useState("");
+  const { register, error } = useAuthContext();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      console.log(error);
-    } else {
-      localStorage.setItem("username", name);
-      console.log(`Name: ${name} Email: ${email} Password: ${password}`);
-      navigate("/dashboard");
-    }
+    await register({ name, email, password, password_confirmation,error });
   };
 
   return (
@@ -64,6 +59,10 @@ export const RegisterModal = () => {
                   />
                 </div>
               </div>
+              {/* {error.name && (
+                <div className="text-sm text-red-500">{error.name[0]}</div>
+              )} */}
+              
               <div>
                 <label
                   className="block font-medium text-gray-700"
@@ -84,6 +83,10 @@ export const RegisterModal = () => {
                   />
                 </div>
               </div>
+              {/* {error.email && (
+                <div className="text-sm text-red-500">{error.email[0]}</div>
+              )} */}
+              
               <div>
                 <label
                   className="block font-medium text-gray-700"
@@ -104,6 +107,9 @@ export const RegisterModal = () => {
                   />
                 </div>
               </div>
+              {/* {error.password && (
+                <div className="text-sm text-red-500">{error.password[0]}</div>
+              )} */}
               <div>
                 <label
                   className="block font-medium text-gray-700"
@@ -115,15 +121,18 @@ export const RegisterModal = () => {
                   <input
                     className="border border-gray-100 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                     type="password"
-                    id="cpassword"
-                    value={confirmPassword}
+                    id="password_confirmation"
+                    value={password_confirmation}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    name="cpassword"
+                    name="password_confirmation"
                     placeholder="Enter a password confirmation"
                     required
                   />
                 </div>
               </div>
+              {/* {error.password_confirmation && (
+                <div className="text-sm text-red-500">{error.password_confirmation[0]}</div>
+              )} */}
               <div>
                 <button
                   type="submit"
