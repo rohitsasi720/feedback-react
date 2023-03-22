@@ -5,7 +5,8 @@ import Avatar from "../assets/avatar.avif";
 import Feedback from "../assets/feedback.png";
 import { Link } from "react-router-dom";
 import { UpvoteDownvote } from "../components/UpvoteDownvote";
-import { FeedbackContextProvider } from "../context/FeedbackContext";
+import { FeedbackList } from "../components/FeedbackList";
+
 
 export const Dashboard = () => {  
   const [showPopup, setShowPopup] = useState(false); 
@@ -21,7 +22,6 @@ export const Dashboard = () => {
     }
   }, [getUser, user]);
 
-  //const { feedbackData } = FeedbackContextProvider();
   
   return (
     <main>
@@ -223,31 +223,18 @@ export const Dashboard = () => {
         </div>
       )}
 
-      
-        <div className="flex pt-2 pb-2 ml-[15.8rem] bg-gray-50 hover:bg-gray-100">
-          <div className="w-20 h-10 pt-8 pl-8">
-            <UpvoteDownvote />
-          </div>
-          <div className="h-24 max-w-6xl pl-4">
-            <div className="px-6">
-              <FeedbackContextProvider>
-                {({ feedbackData }) => (
-              <div className="mb-2 text-xl font-bold">
-                {feedbackData.map((feedback) => (
-                  <div key={feedback.id}>
-                    {feedback.title}
-                    <p className="text-base text-gray-700">
-                      {feedback.details}
-                    </p>
-                  </div>
-                ))}
-              </div>
-                )}
-              </FeedbackContextProvider>
-            </div>
+      <div className="flex pt-2 pb-2 ml-[15.8rem] bg-gray-50 hover:bg-gray-100">
+        <div className="w-20 h-10 pt-8 pl-8">
+          <UpvoteDownvote />
+        </div>
+
+        <div className="h-24 max-w-6xl pl-4">
+          <div className="px-6">
+              <FeedbackList />
+            {/* <FeedbackList /> */}
           </div>
         </div>
-      
+      </div>
 
       <div className="pt-3"></div>
       <div className="flex pt-2 pb-2 ml-[15.8rem] bg-gray-50 hover:bg-gray-100">
