@@ -246,30 +246,36 @@ export const Dashboard = () => {
       )}
 
       {feedbacks.map((feedback) => (
-        <div>
-        <div className="flex pt-2 pb-2 ml-[15.8rem] bg-gray-50 hover:bg-gray-100">
-          <div className="w-20 h-10 pt-8 pl-8">
-            {/* {console.log("loading-vote", loading)} */}
-            {!loading ? <UpvoteDownvote /> : <Skeleton />}
-          </div>
+        <div key={feedback.id}>
+          <div
+            className="flex pt-2 pb-2 ml-[15.8rem] bg-gray-50 hover:bg-gray-100"
+          >
+            <div className="w-20 h-10 pt-8 pl-8">
+              {!loading ? (
+                <UpvoteDownvote
+                  feedbackId={feedback.id}
+                  initialVotes={feedback.votes}
+                />
+              ) : (
+                <Skeleton />
+              )}
+            </div>
 
-          <div className="h-24 max-w-6xl pl-4">
-            <div className="px-6">
-              <React.Fragment key={feedback.id}>
-                <div className="mb-2 text-xl font-bold">
-                  {/* {console.log("loading-title", loading)} */}
-                  {!loading ? feedback.title : <Skeleton />}
-                </div>
-                <p className="text-base text-gray-700">
-                  {/* {console.log("loading-details", loading)} */}
-                  {!loading ? feedback.details : <Skeleton />}
-                </p>
-              </React.Fragment>
+            <div className="max-w-6xl pl-4">
+              <div className="px-6 py-4">
+                <React.Fragment key={feedback.id}>
+                  <div className="mb-2 text-xl font-bold">
+                    {!loading ? feedback.title : <Skeleton />}
+                  </div>
+                  <p className="text-base text-gray-700">
+                    {!loading ? feedback.details : <Skeleton />}
+                  </p>
+                </React.Fragment>
+              </div>
             </div>
           </div>
+          <div className="pt-3"></div>
         </div>
-         <div className="pt-3"></div>
-         </div>
       ))}
     </main>
   );

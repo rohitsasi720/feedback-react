@@ -8,6 +8,7 @@ export const FeedbackBox = () => {
     const [title, setTitle] = useState("");
     const [details, setDetail] = useState("");
     const csrf = () => axios.get('/sanctum/csrf-cookie');
+    
 
     const handleSubmit = async (event) => {
       event.preventDefault();
@@ -24,6 +25,7 @@ export const FeedbackBox = () => {
         setEmail("");
         setTitle("");
         setDetail("");
+        
       } catch (error) {
         console.error(error);
       }
@@ -31,10 +33,10 @@ export const FeedbackBox = () => {
 
   return (
     <main>
-      <section >
+      <section className="pr-4" >
         <div
           className="max-w-sm overflow-hidden border rounded-xl"
-          style={{maxWidth: "320px"}}
+          // style={{maxWidth: "320px"}}
 >
           <div className="p-6">
             <p className="flex mx-3 text-lg font-bold text-center ">New post</p>

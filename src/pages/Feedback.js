@@ -87,17 +87,24 @@ export const Feedback = () => {
             <div className="flex pt-8">
               <FeedbackBox />
 
-              <div className="flex flex-col">
+              <div className="flex flex-col ml-[-1.75rem]">
                 {feedbacks.map((feedback) => (
-                  <div>
-                    <div className="flex pt-2 pb-2 bg-slate-50 hover:bg-gray-100">
-                      <div className="w-20 h-10 pt-4 pl-8">
-                        {!loading ? <UpvoteDownvote /> : <Skeleton />}
+                  <div key={feedback.id}>
+                    <div className="flex pt-2 pb-2">
+                      <div className="w-20 h-10 pt-4 pl-8 ">
+                        {!loading ? (
+                          <UpvoteDownvote
+                            feedbackId={feedback.id}
+                            initialVotes={feedback.votes}
+                          />
+                        ) : (
+                          <Skeleton />
+                        )}
                       </div>
 
-                      <div className="h-24 max-w-6xl pl-4">
+                      <div className="max-w-6xl pl-4">
                         <div className="px-6">
-                          <React.Fragment key={feedback.id}>
+                          <React.Fragment>
                             <div className="mb-2 text-xl font-bold">
                               {!loading ? feedback.title : <Skeleton />}
                             </div>

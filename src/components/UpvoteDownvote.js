@@ -1,22 +1,36 @@
 import { useState } from "react";
+import axios from "../api/axios";
 
-export const UpvoteDownvote = () => {
-  const [votes, setVotes] = useState(0);
+
+export const UpvoteDownvote = ({ feedbackId, initialVotes }) => {
+  const [votes, setVotes] = useState(initialVotes);
   const [voteState, setVoteState] = useState(null);
 
   const handleVote = () => {
+    let newVoteState = null;
     if (voteState === null) {
       setVotes((prevVotes) => prevVotes + 1);
-      setVoteState("upvote");
+      newVoteState = "upvote";
     } else if (voteState === "upvote") {
       setVotes((prevVotes) => prevVotes - 1);
-      setVoteState("downvote");
+      newVoteState = "downvote";
     } else {
       setVotes((prevVotes) => prevVotes + 1);
-      setVoteState("upvote");
+      newVoteState = "upvote";
     }
-  };
 
+    // Send vote update to backend
+    axios.post(`/feedback/${feedbackId}/vote`, { vote: newVoteState })
+      .then(response => {
+        setVotes(response.data.votes);
+        setVoteState(newVoteState);
+      })
+      .catch(error => {
+        console.error(error);
+        // Handle error
+      });
+    }; 
+      
   return (
     <button
       className="w-16 py-2 mr-4 font-semibold text-gray-800 bg-white border border-gray-200 rounded shadow first-letter:px-4 hover:bg-gray-100"
