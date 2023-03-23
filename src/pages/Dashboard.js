@@ -5,11 +5,16 @@ import Avatar from "../assets/avatar.avif";
 import Feedback from "../assets/feedback.png";
 import { Link } from "react-router-dom";
 import { UpvoteDownvote } from "../components/UpvoteDownvote";
-import { FeedbackList } from "../components/FeedbackList";
+import axios from "../api/axios";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+//import { FeedbackList } from "../components/FeedbackList";
 
 
 export const Dashboard = () => {  
-  const [showPopup, setShowPopup] = useState(false); 
+  const [showPopup, setShowPopup] = useState(false);
+  const [feedbacks, setFeedbacks] = useState([]);
+  const [loading, setLoading] = useState(true); 
 
   const handleButtonClick = () => {
     setShowPopup(true); 
@@ -21,7 +26,24 @@ export const Dashboard = () => {
       getUser();
     }
   }, [getUser, user]);
+  
+  useEffect(() => {
+    getFeedbacks();
+  }, []);
 
+  const getFeedbacks = () => {
+    setLoading(true);
+    axios
+      .get("/feedback")
+      .then(({data}) => {
+        setLoading(false);
+        setFeedbacks(data);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log(error);
+      });
+  };
   
   return (
     <main>
@@ -223,37 +245,32 @@ export const Dashboard = () => {
         </div>
       )}
 
-      <div className="flex pt-2 pb-2 ml-[15.8rem] bg-gray-50 hover:bg-gray-100">
-        <div className="w-20 h-10 pt-8 pl-8">
-          <UpvoteDownvote />
-        </div>
-
-        <div className="h-24 max-w-6xl pl-4">
-          <div className="px-6">
-              <FeedbackList />
-            {/* <FeedbackList /> */}
+      {feedbacks.map((feedback) => (
+        <div>
+        <div className="flex pt-2 pb-2 ml-[15.8rem] bg-gray-50 hover:bg-gray-100">
+          <div className="w-20 h-10 pt-8 pl-8">
+            {/* {console.log("loading-vote", loading)} */}
+            {!loading ? <UpvoteDownvote /> : <Skeleton />}
           </div>
-        </div>
-      </div>
 
-      <div className="pt-3"></div>
-      <div className="flex pt-2 pb-2 ml-[15.8rem] bg-gray-50 hover:bg-gray-100">
-        <div className="w-20 h-10 pt-8 pl-8">
-          <UpvoteDownvote />
-        </div>
-        <div className="h-24 max-w-6xl pl-4">
-          <div className="px-6">
-            <div className="mb-2 text-xl font-bold">
-              Lorem ipsum dolor sit amet
+          <div className="h-24 max-w-6xl pl-4">
+            <div className="px-6">
+              <React.Fragment key={feedback.id}>
+                <div className="mb-2 text-xl font-bold">
+                  {/* {console.log("loading-title", loading)} */}
+                  {!loading ? feedback.title : <Skeleton />}
+                </div>
+                <p className="text-base text-gray-700">
+                  {/* {console.log("loading-details", loading)} */}
+                  {!loading ? feedback.details : <Skeleton />}
+                </p>
+              </React.Fragment>
             </div>
-            <p className="text-base text-gray-700">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-              Voluptatibus quia, Nonea! Maiores et perferendis eaque,
-              exercitationem praesentium nihil.
-            </p>
           </div>
         </div>
-      </div>
+         <div className="pt-3"></div>
+         </div>
+      ))}
     </main>
   );
 };

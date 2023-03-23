@@ -1,18 +1,42 @@
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import bulb from "../assets/idea.png";
 import { FeedbackBox } from "../components/FeedbackBox";
 import { UpvoteDownvote } from "../components/UpvoteDownvote";
 import useAuthContext from "../context/AuthContext";
 import { useEffect } from "react";
+import axios from "../api/axios";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 export const Feedback = () => {
   const { user, getUser, logout } = useAuthContext();
+  const [feedbacks, setFeedbacks] = useState([]);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     if (!user) {
       getUser();
     }
   }, [getUser, user]);
-  
+
+  useEffect(() => {
+    getFeedbacks();
+  }, []);
+
+  const getFeedbacks = () => {
+    setLoading(true);
+    axios
+      .get("/feedback")
+      .then(({ data }) => {
+        setLoading(false);
+        setFeedbacks(data);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log(error);
+      });
+  };
+
   return (
     <main>
       <section>
@@ -64,59 +88,29 @@ export const Feedback = () => {
               <FeedbackBox />
 
               <div className="flex flex-col">
-                <div className="flex pb-4 m-2 ml-16">
-                  <div className="w-20 h-10">
-                    <UpvoteDownvote />
-                  </div>
-                  <div className="h-32 max-w-3xl overflow-hidden rounded shadow-lg">
-                    <div className="px-6 py-4">
-                      <div className="mb-2 text-xl font-bold">
-                        Lorem ipsum dolor sit amet
+                {feedbacks.map((feedback) => (
+                  <div>
+                    <div className="flex pt-2 pb-2 bg-slate-50 hover:bg-gray-100">
+                      <div className="w-20 h-10 pt-4 pl-8">
+                        {!loading ? <UpvoteDownvote /> : <Skeleton />}
                       </div>
-                      <p className="text-base text-gray-700">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing
-                        elit. Voluptatibus quia, Nonea! Maiores et perferendis
-                        eaque, exercitationem praesentium nihil.
-                      </p>
-                    </div>
-                  </div>
-                </div>
 
-                <div className="flex pb-4 m-2 ml-16">
-                  <div className="w-20 h-10">
-                    <UpvoteDownvote />
-                  </div>
-                  <div className="h-32 max-w-3xl overflow-hidden rounded shadow-lg">
-                    <div className="px-6 py-4">
-                      <div className="mb-2 text-xl font-bold">
-                        Lorem ipsum dolor sit amet
+                      <div className="h-24 max-w-6xl pl-4">
+                        <div className="px-6">
+                          <React.Fragment key={feedback.id}>
+                            <div className="mb-2 text-xl font-bold">
+                              {!loading ? feedback.title : <Skeleton />}
+                            </div>
+                            <p className="text-base text-gray-700">
+                              {!loading ? feedback.details : <Skeleton />}
+                            </p>
+                          </React.Fragment>
+                        </div>
                       </div>
-                      <p className="text-base text-gray-700">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing
-                        elit. Voluptatibus quia, Nonea! Maiores et perferendis
-                        eaque, exercitationem praesentium nihil.
-                      </p>
                     </div>
+                    <div className="pt-3"></div>
                   </div>
-                </div>
-
-                <div className="flex pb-4 m-2 ml-16">
-                  <div className="w-20 h-10">
-                    <UpvoteDownvote />
-                  </div>
-                  <div className="h-32 max-w-3xl overflow-hidden rounded shadow-lg">
-                    <div className="px-6 py-4">
-                      <div className="mb-2 text-xl font-bold">
-                        Lorem ipsum dolor sit amet
-                      </div>
-                      <p className="text-base text-gray-700">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing
-                        elit. Voluptatibus quia, Nonea! Maiores et perferendis
-                        eaque, exercitationem praesentium nihil.
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
