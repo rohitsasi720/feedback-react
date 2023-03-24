@@ -35,9 +35,7 @@ export const FeedbackBox = () => {
     <main>
       <section className="pr-4" >
         <div
-          className="max-w-sm overflow-hidden border rounded-xl"
-          // style={{maxWidth: "320px"}}
->
+          className="max-w-sm overflow-hidden border rounded-xl">
           <div className="p-6">
             <p className="flex mx-3 text-lg font-bold text-center ">New post</p>
             <span className="block pb-4 mx-3 text-gray-400">

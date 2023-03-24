@@ -13,6 +13,8 @@ export const Feedback = () => {
   const { user, getUser, logout } = useAuthContext();
   const [feedbacks, setFeedbacks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [totalVotes, setTotalVotes] = useState(0);
+
   useEffect(() => {
     if (!user) {
       getUser();
@@ -36,6 +38,30 @@ export const Feedback = () => {
         console.log(error);
       });
   };
+
+  useEffect(() => {
+    const storedTotalVotes = JSON.parse(localStorage.getItem("totalVotes"));
+    if (storedTotalVotes) {
+      setTotalVotes(storedTotalVotes);
+    } else {
+      const initialTotalVotes = {};
+      feedbacks.forEach((feedback) => {
+        axios
+          .get(`/api/feedback/${feedback.id}/total_votes`)
+          .then((response) => {
+            initialTotalVotes[feedback.id] = response.data.total_votes;
+            setTotalVotes(initialTotalVotes);
+            localStorage.setItem(
+              "totalVotes",
+              JSON.stringify(initialTotalVotes)
+            );
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      });
+    }
+  }, [feedbacks]);
 
   return (
     <main>
@@ -94,8 +120,13 @@ export const Feedback = () => {
                       <div className="w-20 h-10 pt-4 pl-8 ">
                         {!loading ? (
                           <UpvoteDownvote
+                            userId={user.id}
                             feedbackId={feedback.id}
-                            initialVotes={feedback.votes}
+                            initialVotes={
+                              totalVotes[feedback.id] !== undefined
+                                ? totalVotes[feedback.id]
+                                : 0
+                            }
                           />
                         ) : (
                           <Skeleton />

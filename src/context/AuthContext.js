@@ -23,6 +23,7 @@ export const AuthProvider = ({ children }) => {
             email,
             password,
           });
+          localStorage.setItem("useremail", email);
           await getUser();
           navigate("/dashboard");
         } catch (error) {

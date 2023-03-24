@@ -10,12 +10,51 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 //import { FeedbackList } from "../components/FeedbackList";
 
-
 export const Dashboard = () => {  
   const [showPopup, setShowPopup] = useState(false);
   const [feedbacks, setFeedbacks] = useState([]);
   const [loading, setLoading] = useState(true); 
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [title, setTitle] = useState("");
+  const [details, setDetails] = useState("");
+  const csrf = () => axios.get('/sanctum/csrf-cookie');
+  const [totalVotes, setTotalVotes] = useState(0);
+  //console.log(name, email, title, details);
 
+  useEffect(() => {
+    const storedEmail = localStorage.getItem("useremail");
+    const storedName = localStorage.getItem("username");
+    if (storedEmail) {
+      setEmail(storedEmail);
+    }
+    if (storedName) {
+      setName(storedName);
+    }
+  }, []);
+  
+const handleSubmit = async (event) => {
+      event.preventDefault();
+      await csrf();
+      try {
+        
+        const response = await axios.post("/submit-form", {
+          name,
+          email,
+          title,
+          details,
+        });
+        console.log(response.data.message);
+        setName("");
+        setEmail("");
+        setTitle("");
+        setDetails("");
+        
+      } catch (error) {
+        console.error(error);
+      }
+    };
+  
   const handleButtonClick = () => {
     setShowPopup(true); 
   };
@@ -44,6 +83,30 @@ export const Dashboard = () => {
         console.log(error);
       });
   };
+
+  useEffect(() => {
+    const storedTotalVotes = JSON.parse(localStorage.getItem("totalVotes"));
+    if (storedTotalVotes) {
+      setTotalVotes(storedTotalVotes);
+    } else {
+      const initialTotalVotes = {};
+      feedbacks.forEach((feedback) => {
+        axios
+          .get(`/api/feedback/${feedback.id}/total_votes`)
+          .then((response) => {
+            initialTotalVotes[feedback.id] = response.data.total_votes;
+            setTotalVotes(initialTotalVotes);
+            localStorage.setItem(
+              "totalVotes",
+              JSON.stringify(initialTotalVotes)
+            );
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      });
+    }
+  }, [feedbacks]);
   
   return (
     <main>
@@ -204,6 +267,8 @@ export const Dashboard = () => {
                           className="border border-gray-100 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                           type="text"
                           id="name"
+                          value={title}
+                          onChange={(e) => setTitle(e.target.value)}
                           name="name"
                           placeholder="Short, descriptive title"
                           required
@@ -222,6 +287,8 @@ export const Dashboard = () => {
                         <textarea
                           className="border border-gray-100 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 h-24 resize-none"
                           id="detail"
+                          value={details}
+                          onChange={(e) => setDetails(e.target.value)}
                           name="detail"
                           placeholder="Any additional details..."
                           required
@@ -235,7 +302,10 @@ export const Dashboard = () => {
                 <button
                   type="submit"
                   className="items-center px-4 py-2 text-base font-medium text-white bg-blue-500 border border-transparent rounded-3xl"
-                  onClick={() => setShowPopup(false)}
+                  onClick={(event) => {
+                    setShowPopup(false);
+                    handleSubmit(event);
+                  }}
                 >
                   → Submit feedback
                 </button>
@@ -247,14 +317,17 @@ export const Dashboard = () => {
 
       {feedbacks.map((feedback) => (
         <div key={feedback.id}>
-          <div
-            className="flex pt-2 pb-2 ml-[15.8rem] bg-gray-50 hover:bg-gray-100"
-          >
+          <div className="flex pt-2 pb-2 ml-[15.8rem] hover:bg-gray-50">
             <div className="w-20 h-10 pt-8 pl-8">
               {!loading ? (
                 <UpvoteDownvote
+                  userId={user.id}
                   feedbackId={feedback.id}
-                  initialVotes={feedback.votes}
+                  initialVotes={
+                    totalVotes[feedback.id] !== undefined
+                      ? totalVotes[feedback.id]
+                      : 0
+                  }
                 />
               ) : (
                 <Skeleton />
