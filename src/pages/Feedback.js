@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import bulb from "../assets/idea.png";
 import { FeedbackBox } from "../components/FeedbackBox";
 import { UpvoteDownvote } from "../components/UpvoteDownvote";
@@ -14,12 +14,17 @@ export const Feedback = () => {
   const [feedbacks, setFeedbacks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [totalVotes, setTotalVotes] = useState(0);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!user) {
-      getUser();
-    }
-  }, [getUser, user]);
+ useEffect(() => {
+   async function fetchUser() {
+     const user = await getUser();
+     if (!user) {
+       navigate("/login");
+     }
+   }
+   fetchUser();
+ }, []);
 
   useEffect(() => {
     getFeedbacks();

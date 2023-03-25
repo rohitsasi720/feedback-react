@@ -1,26 +1,80 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import useAuthContext from "../context/AuthContext";
 import Logo from "../assets/mozilor-logo.svg";
 import Avatar from "../assets/avatar.avif";
 import Feedback from "../assets/feedback.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { UpvoteDownvote } from "../components/UpvoteDownvote";
 import axios from "../api/axios";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 //import { FeedbackList } from "../components/FeedbackList";
 
-export const Dashboard = () => {  
+export const Dashboard = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [feedbacks, setFeedbacks] = useState([]);
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [title, setTitle] = useState("");
   const [details, setDetails] = useState("");
-  const csrf = () => axios.get('/sanctum/csrf-cookie');
+  const csrf = useCallback(() => axios.get("/sanctum/csrf-cookie"), []);
   const [totalVotes, setTotalVotes] = useState(0);
-  //console.log(name, email, title, details);
+  const navigate = useNavigate();
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    await csrf();
+    try {
+      const response = await axios.post("/submit-form", {
+        name,
+        email,
+        title,
+        details,
+      });
+      setName("");
+      setEmail("");
+      setTitle("");
+      setDetails("");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleButtonClick = () => {
+    setShowPopup(true);
+  };
+
+  const { user, getUser, logout } = useAuthContext();
+
+ useEffect(() => {
+   async function fetchUser() {
+     const user = await getUser();
+     if (!user) {
+       navigate("/login");
+     }
+   }
+   fetchUser();
+ },[]);
+
+
+  const getFeedbacks = useCallback(() => {
+    setLoading(true);
+    axios
+      .get("/feedback")
+      .then(({ data }) => {
+        setLoading(false);
+        setFeedbacks(data);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    getFeedbacks();
+  }, [getFeedbacks]);
 
   useEffect(() => {
     const storedEmail = localStorage.getItem("useremail");
@@ -32,82 +86,40 @@ export const Dashboard = () => {
       setName(storedName);
     }
   }, []);
-  
-const handleSubmit = async (event) => {
-      event.preventDefault();
-      await csrf();
-      try {
-        
-        const response = await axios.post("/submit-form", {
-          name,
-          email,
-          title,
-          details,
-        });
-        console.log(response.data.message);
-        setName("");
-        setEmail("");
-        setTitle("");
-        setDetails("");
-        
-      } catch (error) {
-        console.error(error);
-      }
-    };
-  
-  const handleButtonClick = () => {
-    setShowPopup(true); 
-  };
-
-  const { user, getUser, logout } = useAuthContext();
-  useEffect(() => {
-    if(!user){
-      getUser();
-    }
-  }, [getUser, user]);
-  
-  useEffect(() => {
-    getFeedbacks();
-  }, []);
-
-  const getFeedbacks = () => {
-    setLoading(true);
-    axios
-      .get("/feedback")
-      .then(({data}) => {
-        setLoading(false);
-        setFeedbacks(data);
-      })
-      .catch((error) => {
-        setLoading(false);
-        console.log(error);
-      });
-  };
 
   useEffect(() => {
     const storedTotalVotes = JSON.parse(localStorage.getItem("totalVotes"));
-    if (storedTotalVotes) {
-      setTotalVotes(storedTotalVotes);
-    } else {
+
+    async function fetchTotalVotes() {
       const initialTotalVotes = {};
-      feedbacks.forEach((feedback) => {
-        axios
-          .get(`/api/feedback/${feedback.id}/total_votes`)
-          .then((response) => {
+
+      for (const feedback of feedbacks) {
+        if (feedback && feedback.id) {
+          try {
+            const response = await axios.get(
+              `/api/feedback/${feedback.id}/total_votes`
+            );
             initialTotalVotes[feedback.id] = response.data.total_votes;
-            setTotalVotes(initialTotalVotes);
             localStorage.setItem(
               "totalVotes",
               JSON.stringify(initialTotalVotes)
             );
-          })
-          .catch((error) => {
+          } catch (error) {
             console.error(error);
-          });
-      });
+          }
+        }
+      }
+
+      setTotalVotes(initialTotalVotes);
+    }
+
+    if (storedTotalVotes) {
+      setTotalVotes(storedTotalVotes);
+    } else {
+      fetchTotalVotes();
     }
   }, [feedbacks]);
-  
+
   return (
     <main>
       <div>

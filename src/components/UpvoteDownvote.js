@@ -3,10 +3,7 @@ import axios from "../api/axios";
 
 
 export const UpvoteDownvote = ({ feedbackId, userId, initialVotes }) => {
-  
-  {
-    console.log("hi" + initialVotes);
-  }
+
   const [votes, setVotes] = useState(initialVotes);
   const [voteState, setVoteState] = useState(null);
 

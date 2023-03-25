@@ -1,12 +1,8 @@
-import './App.css';
-import { AllRoutes } from './routes/Allroutes';
+import "./App.css";
+import { AllRoutes } from "./routes/Allroutes";
 
 function App() {
-  return (
-    <div className="App">
-      <AllRoutes />
-    </div>
-  );
+  return <AllRoutes />;
 }
 
 export default App;
