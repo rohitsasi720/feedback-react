@@ -6,8 +6,6 @@ import { UpvoteDownvote } from "../components/UpvoteDownvote";
 import useAuthContext from "../context/AuthContext";
 import { useEffect } from "react";
 import axios from "../api/axios";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 
 export const Feedback = () => {
   const { user, getUser, logout } = useAuthContext();
@@ -123,7 +121,7 @@ export const Feedback = () => {
                   <div key={feedback.id}>
                     <div className="flex pt-2 pb-2">
                       <div className="w-20 h-10 pt-4 pl-8 ">
-                        {!loading ? (
+                        {
                           <UpvoteDownvote
                             userId={user.id}
                             feedbackId={feedback.id}
@@ -133,19 +131,17 @@ export const Feedback = () => {
                                 : 0
                             }
                           />
-                        ) : (
-                          <Skeleton />
-                        )}
+                        }
                       </div>
 
                       <div className="max-w-6xl pl-4">
                         <div className="px-6">
                           <React.Fragment>
                             <div className="mb-2 text-xl font-bold">
-                              {!loading ? feedback.title : <Skeleton />}
+                              {feedback.title}
                             </div>
                             <p className="text-base text-gray-700">
-                              {!loading ? feedback.details : <Skeleton />}
+                              {feedback.details}
                             </p>
                           </React.Fragment>
                         </div>

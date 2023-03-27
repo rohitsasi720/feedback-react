@@ -6,8 +6,6 @@ import Feedback from "../assets/feedback.png";
 import { Link, useNavigate } from "react-router-dom";
 import { UpvoteDownvote } from "../components/UpvoteDownvote";
 import axios from "../api/axios";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 //import { FeedbackList } from "../components/FeedbackList";
 
 export const Dashboard = () => {
@@ -139,7 +137,6 @@ export const Dashboard = () => {
                 className="text-lg font-semibold tracking-wide text-gray-700 capitalize font-poppins"
                 id="name"
               >
-                {/* {user?.name} */}
                 {JSON.parse(localStorage.getItem("user")).name}
               </h4>
               <span className="flex items-center space-x-1 text-sm tracking-wide">
@@ -331,7 +328,7 @@ export const Dashboard = () => {
         <div key={feedback.id}>
           <div className="flex pt-2 pb-2 ml-[15.8rem] hover:bg-gray-50">
             <div className="w-20 h-10 pt-8 pl-8">
-              {!loading ? (
+              {
                 <UpvoteDownvote
                   userId={user.id}
                   feedbackId={feedback.id}
@@ -341,19 +338,17 @@ export const Dashboard = () => {
                       : 0
                   }
                 />
-              ) : (
-                <Skeleton />
-              )}
+              }
             </div>
 
             <div className="max-w-6xl pl-4">
               <div className="px-6 py-4">
                 <React.Fragment key={feedback.id}>
                   <div className="mb-2 text-xl font-bold">
-                    {!loading ? feedback.title : <Skeleton />}
+                    {feedback.title}
                   </div>
                   <p className="text-base text-gray-700">
-                    {!loading ? feedback.details : <Skeleton />}
+                    {feedback.details}
                   </p>
                 </React.Fragment>
               </div>

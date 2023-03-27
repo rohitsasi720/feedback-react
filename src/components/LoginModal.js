@@ -30,7 +30,7 @@ export const LoginModal = () => {
           </div>
         </div>
       </nav>
-      <section>
+      <section className='py-32'>
         <div className="max-w-md p-6 mx-auto overflow-hidden bg-white shadow-md rounded-xl">
           <p className="p-3 text-lg font-bold text-center">Login</p>
           <form className="space-y-6" onSubmit={handleSubmit}>

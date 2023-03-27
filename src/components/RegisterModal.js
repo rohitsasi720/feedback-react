@@ -35,7 +35,7 @@ export const RegisterModal = () => {
       </nav>
 
       <section>
-        <div className="">
+        <div className="py-24">
           <div className="max-w-md p-6 mx-auto overflow-hidden bg-white shadow-md rounded-xl">
             <p className="p-3 text-lg font-bold text-center">Register</p>
             <form className="space-y-6" onSubmit={handleSubmit}>
