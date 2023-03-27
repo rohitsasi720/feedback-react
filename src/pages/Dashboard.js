@@ -140,7 +140,7 @@ export const Dashboard = () => {
                 id="name"
               >
                 {/* {user?.name} */}
-                {localStorage.getItem("username")}
+                {JSON.parse(localStorage.getItem("user")).name}
               </h4>
               <span className="flex items-center space-x-1 text-sm tracking-wide">
                 <svg

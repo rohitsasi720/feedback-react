@@ -16,16 +16,10 @@ const getUser = async () => {
     const userFromLocalStorage = localStorage.getItem("user");
     if (userFromLocalStorage) {
       data = JSON.parse(userFromLocalStorage);
-      console.log("User data loaded from local storage:", data);
     } else {
       const response = await axios.get("/api/user");
       data = response.data;
-      console.log("User data loaded from API:", data);
       localStorage.setItem("user", JSON.stringify(data));
-      console.log(
-        "User data stored in local storage:",
-        localStorage.getItem("user")
-      );
     }
     setUser(data);
     return data;
