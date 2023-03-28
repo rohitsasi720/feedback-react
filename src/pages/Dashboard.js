@@ -3,9 +3,11 @@ import useAuthContext from "../context/AuthContext";
 import Logo from "../assets/mozilor-logo.svg";
 import Avatar from "../assets/avatar.avif";
 import Feedback from "../assets/feedback.png";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { UpvoteDownvote } from "../components/UpvoteDownvote";
 import axios from "../api/axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 //import { FeedbackList } from "../components/FeedbackList";
 
 export const Dashboard = () => {
@@ -19,6 +21,17 @@ export const Dashboard = () => {
   const csrf = useCallback(() => axios.get("/sanctum/csrf-cookie"), []);
   const [totalVotes, setTotalVotes] = useState(0);
   const navigate = useNavigate();
+  const location = useLocation();
+  const success = new URLSearchParams(location.search).get("success");
+
+
+  useEffect(() => {
+    // if (success === "true") 
+    // {
+    //   toast.success("Login successful!");
+    // }
+    console.log("success");
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -34,8 +47,10 @@ export const Dashboard = () => {
       setEmail("");
       setTitle("");
       setDetails("");
+      toast.success("Feedback submitted successfully!");
     } catch (error) {
       console.error(error);
+      toast.warning("Feedback submission failed!");
     }
   };
 
@@ -75,8 +90,8 @@ export const Dashboard = () => {
   }, [getFeedbacks]);
 
   useEffect(() => {
-    const storedEmail = localStorage.getItem("useremail");
-    const storedName = localStorage.getItem("username");
+    const storedEmail = JSON.parse(localStorage.getItem("user")).email;
+    const storedName = JSON.parse(localStorage.getItem("user")).name;
     if (storedEmail) {
       setEmail(storedEmail);
     }
@@ -107,7 +122,6 @@ export const Dashboard = () => {
           }
         }
       }
-
       setTotalVotes(initialTotalVotes);
     }
 
@@ -120,6 +134,7 @@ export const Dashboard = () => {
 
   return (
     <main>
+      <ToastContainer />
       <div>
         <div className="sidebar fixed top-0 bottom-0 lg:left-0 p-2 w-[255px] overflow-y-auto text-center">
           <div className="p-2.5 mt-0.5 flex items-center">

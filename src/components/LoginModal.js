@@ -1,20 +1,28 @@
-import { Link } from 'react-router-dom'
-import { useState } from 'react'
-import useAuthContext from '../context/AuthContext'
-
+import { Link } from "react-router-dom";
+import { useState } from "react";
+import useAuthContext from "../context/AuthContext";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const LoginModal = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login, error } = useAuthContext();
+  const loginfailed = () => toast.warning("Login failed!");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    await login({ email, password });
+    try {
+      await login({ email, password });
+    } catch (error) {
+      console.error("Login failed:", error.message);
+      loginfailed();
+    }
   };
 
   return (
     <>
+      <ToastContainer />
       <nav className="relative flex flex-wrap items-center justify-between px-2 py-3 mb-3">
         <div className="container flex flex-wrap items-center justify-between px-4 mx-auto">
           <div className="relative flex justify-between w-full text-2xl font-semibold text-gray-400 lg:w-auto lg:static lg:block lg:justify-start">
@@ -30,7 +38,7 @@ export const LoginModal = () => {
           </div>
         </div>
       </nav>
-      <section className='py-32'>
+      <section className="py-32">
         <div className="max-w-md p-6 mx-auto overflow-hidden bg-white shadow-md rounded-xl">
           <p className="p-3 text-lg font-bold text-center">Login</p>
           <form className="space-y-6" onSubmit={handleSubmit}>
@@ -55,13 +63,11 @@ export const LoginModal = () => {
               </div>
             </div>
             {error.email && (
-              <div className='flex'>
-              <span className='p-2 m-2 text-sm text-red-400'>
-                {error.email[0]}
-              </span>
-            </div>
+              <div className="flex">
+                <span className="text-sm text-red-400">{error.email[0]}</span>
+              </div>
             )}
-            
+
             <div>
               <label
                 className="block font-medium text-gray-700"
@@ -83,11 +89,11 @@ export const LoginModal = () => {
               </div>
             </div>
             {error.password && (
-              <div className='flex'>
-              <span className='p-2 m-2 text-sm text-red-400'>
-                {error.password[0]}
-              </span>
-            </div>
+              <div className="flex">
+                <span className="text-sm text-red-400">
+                  {error.password[0]}
+                </span>
+              </div>
             )}
             <div>
               <button
@@ -102,6 +108,4 @@ export const LoginModal = () => {
       </section>
     </>
   );
-}
-
-
+};

@@ -2,12 +2,8 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 export const PageNotFound = () => {
-  useEffect(() => {
-    const previousPageUrl = document.referrer;
-    console.log(previousPageUrl);
-  }, []);
 
-  return (
+return (
     <div className="justify-center h-screen ">
       <center className="m-auto mt-24">
         <svg

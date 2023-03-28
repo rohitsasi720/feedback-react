@@ -1,14 +1,14 @@
 import { useState } from "react";
 import axios from "../api/axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const FeedbackBox = () => {
-
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [title, setTitle] = useState("");
     const [details, setDetail] = useState("");
     const csrf = () => axios.get('/sanctum/csrf-cookie');
-    
 
     const handleSubmit = async (event) => {
       event.preventDefault();
@@ -25,7 +25,7 @@ export const FeedbackBox = () => {
         setEmail("");
         setTitle("");
         setDetail("");
-        
+        toast.info("Thanks for your feedback!")
       } catch (error) {
         console.error(error);
       }
@@ -33,9 +33,9 @@ export const FeedbackBox = () => {
 
   return (
     <main>
-      <section className="pr-4" >
-        <div
-          className="max-w-sm overflow-hidden border rounded-xl">
+      <ToastContainer />
+      <section className="pr-4">
+        <div className="max-w-sm overflow-hidden border rounded-xl">
           <div className="p-6">
             <p className="flex mx-3 text-lg font-bold text-center ">New post</p>
             <span className="block pb-4 mx-3 text-gray-400">

@@ -31,9 +31,6 @@ const getUser = async () => {
 };
 
 
-
-
-
   const login = async ({ email, password }) => {
     await csrf();
     try {
@@ -43,10 +40,11 @@ const getUser = async () => {
       });
       localStorage.setItem("useremail", email);
       await getUser();
-      navigate("/dashboard");
+      navigate("/dashboard?success=true");
     } catch (error) {
       if (error.response.status === 422) {
         setError(error.response.data.errors);
+        throw new Error("Login failed");
       }
     }
   };

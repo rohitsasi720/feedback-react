@@ -116,7 +116,7 @@ export const Feedback = () => {
             <div className="flex pt-8">
               <FeedbackBox />
 
-              <div className="flex flex-col ml-[-1.75rem]">
+              <div className="flex flex-col">
                 {feedbacks.map((feedback) => (
                   <div key={feedback.id}>
                     <div className="flex pt-2 pb-2">

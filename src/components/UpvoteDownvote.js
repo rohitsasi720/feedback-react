@@ -27,16 +27,13 @@ export const UpvoteDownvote = ({ feedbackId, userId, initialVotes }) => {
       const button = event.target;
       const buttonHeight = button.offsetHeight;
       const clickY = event.clientY - button.getBoundingClientRect().top;
-      console.log(clickY);
 
       if (clickY < buttonHeight / 2) {
         handleVote(1);
         setVoteState("upvote")
-        console.log(voteState) 
       } else {
         handleVote(-1);
         setVoteState("downvote")
-        console.log(voteState) 
       }
     };
       

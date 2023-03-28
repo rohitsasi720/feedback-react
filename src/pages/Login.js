@@ -3,7 +3,7 @@ export const Login = () => {
   return (
     <main>
       <section>
-<LoginModal />
+        <LoginModal />
       </section>
     </main>
   );
