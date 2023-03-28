@@ -10,7 +10,6 @@ import axios from "../api/axios";
 export const Feedback = () => {
   const { user, getUser, logout } = useAuthContext();
   const [feedbacks, setFeedbacks] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [totalVotes, setTotalVotes] = useState(0);
   const navigate = useNavigate();
 
@@ -29,15 +28,12 @@ export const Feedback = () => {
   }, []);
 
   const getFeedbacks = () => {
-    setLoading(true);
     axios
       .get("/feedback")
       .then(({ data }) => {
-        setLoading(false);
         setFeedbacks(data);
       })
       .catch((error) => {
-        setLoading(false);
         console.log(error);
       });
   };

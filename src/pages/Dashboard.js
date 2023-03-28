@@ -3,17 +3,15 @@ import useAuthContext from "../context/AuthContext";
 import Logo from "../assets/mozilor-logo.svg";
 import Avatar from "../assets/avatar.avif";
 import Feedback from "../assets/feedback.png";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { UpvoteDownvote } from "../components/UpvoteDownvote";
 import axios from "../api/axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-//import { FeedbackList } from "../components/FeedbackList";
 
 export const Dashboard = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [feedbacks, setFeedbacks] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [title, setTitle] = useState("");
@@ -21,23 +19,13 @@ export const Dashboard = () => {
   const csrf = useCallback(() => axios.get("/sanctum/csrf-cookie"), []);
   const [totalVotes, setTotalVotes] = useState(0);
   const navigate = useNavigate();
-  const location = useLocation();
-  const success = new URLSearchParams(location.search).get("success");
 
-
-  useEffect(() => {
-    // if (success === "true") 
-    // {
-    //   toast.success("Login successful!");
-    // }
-    console.log("success");
-  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     await csrf();
     try {
-      const response = await axios.post("/submit-form", {
+      await axios.post("/submit-form", {
         name,
         email,
         title,
@@ -72,15 +60,12 @@ export const Dashboard = () => {
 
 
   const getFeedbacks = useCallback(() => {
-    setLoading(true);
     axios
       .get("/feedback")
       .then(({ data }) => {
-        setLoading(false);
         setFeedbacks(data);
       })
       .catch((error) => {
-        setLoading(false);
         console.log(error);
       });
   }, []);

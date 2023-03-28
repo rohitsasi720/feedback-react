@@ -59,10 +59,6 @@ export const RegisterModal = () => {
                   />
                 </div>
               </div>
-              {/* {error.name && (
-                <div className="text-sm text-red-500">{error.name[0]}</div>
-              )} */}
-              
               <div>
                 <label
                   className="block font-medium text-gray-700"
@@ -83,10 +79,6 @@ export const RegisterModal = () => {
                   />
                 </div>
               </div>
-              {/* {error.email && (
-                <div className="text-sm text-red-500">{error.email[0]}</div>
-              )} */}
-              
               <div>
                 <label
                   className="block font-medium text-gray-700"
@@ -107,9 +99,6 @@ export const RegisterModal = () => {
                   />
                 </div>
               </div>
-              {/* {error.password && (
-                <div className="text-sm text-red-500">{error.password[0]}</div>
-              )} */}
               <div>
                 <label
                   className="block font-medium text-gray-700"
@@ -130,9 +119,6 @@ export const RegisterModal = () => {
                   />
                 </div>
               </div>
-              {/* {error.password_confirmation && (
-                <div className="text-sm text-red-500">{error.password_confirmation[0]}</div>
-              )} */}
               <div>
                 <button
                   type="submit"
