@@ -8,6 +8,9 @@ import { UpvoteDownvote } from "../components/UpvoteDownvote";
 import axios from "../api/axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useSelector } from "react-redux";
+import { addFeedback } from "../store/feedbackSlice";
+import { useDispatch } from "react-redux";
 
 export const Dashboard = () => {
   const [showPopup, setShowPopup] = useState(false);
@@ -19,6 +22,16 @@ export const Dashboard = () => {
   const csrf = useCallback(() => axios.get("/sanctum/csrf-cookie"), []);
   const [totalVotes, setTotalVotes] = useState(0);
   const navigate = useNavigate();
+  const entry = useSelector((state) => state.feedback.entry);
+
+  const dispatch = useDispatch();
+  const handleAddFeedback = (event) => {
+    event.preventDefault();
+    dispatch(addFeedback({title,details}));
+    setTitle("");
+    setDetails("");
+  };
+  console.log(entry);
 
 
   const handleSubmit = async (event) => {
@@ -214,7 +227,6 @@ export const Dashboard = () => {
           <></>
         )}
       </div>
-
       {showPopup && (
         <div className="fixed inset-0 overflow-y-auto z-8">
           <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
@@ -314,6 +326,7 @@ export const Dashboard = () => {
                   onClick={(event) => {
                     setShowPopup(false);
                     handleSubmit(event);
+                    handleAddFeedback(event);
                   }}
                 >
                   → Submit feedback
@@ -323,7 +336,6 @@ export const Dashboard = () => {
           </div>
         </div>
       )}
-
       {feedbacks.map((feedback) => (
         <div key={feedback.id}>
           <div className="flex pt-2 pb-2 ml-[15.8rem] hover:bg-gray-50">
@@ -340,16 +352,12 @@ export const Dashboard = () => {
                 />
               }
             </div>
-
             <div className="max-w-6xl pl-4">
               <div className="px-6 py-4">
                 <React.Fragment key={feedback.id}>
-                  <div className="mb-2 text-xl font-bold">
-                    {feedback.title}
-                  </div>
-                  <p className="text-base text-gray-700">
-                    {feedback.details}
-                  </p>
+                  <div className="mb-2 text-xl font-bold">{feedback.title}</div>
+                  <p className="text-base text-gray-700">{feedback.details}</p>
+                  {console.log(feedback.id)}
                 </React.Fragment>
               </div>
             </div>
@@ -357,6 +365,43 @@ export const Dashboard = () => {
           <div className="pt-3"></div>
         </div>
       ))}
+      {entry.length !== 0 && (
+        <div>
+              {entry.map((item, id) => (
+                <React.Fragment key={id}>
+                  <div className="flex pt-2 pb-2 ml-[15.8rem] hover:bg-gray-50">
+                    <div className="w-20 h-10 pt-8 pl-8">
+                      {
+                        <UpvoteDownvote
+                          userId={user.id}
+                          feedbackId={item.id}
+                          initialVotes={
+                            totalVotes[item.id] !== undefined
+                              ? totalVotes[item.id]
+                              : 0
+                          }
+                        />
+                      }
+                    </div>
+                    <div className="max-w-6xl pl-4">
+                      <div className="px-6 py-4">
+                        <React.Fragment key={item.id}>
+                          <div className="mb-2 text-xl font-bold">
+                            {item.title}
+                          </div>
+                          <p className="text-base text-gray-700">
+                            {item.details}
+                          </p>
+                        </React.Fragment>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="pt-3"></div>
+                </React.Fragment>
+              ))}
+          <div className="pt-3"></div>
+        </div>
+      )}
     </main>
   );
 };
